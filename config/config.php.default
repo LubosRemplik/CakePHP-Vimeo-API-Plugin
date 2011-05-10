@@ -1,0 +1,8 @@
+<?php
+############################################################################
+# Vimeo API
+############################################################################
+$config['Vimeo']['oauth_consumer_key'] = 'Consumer Key';
+$config['Vimeo']['oauth_consumer_secret'] = 'Consumer Secret';
+$config['Vimeo']['oauth_token'] = 'OAuth Token';
+$config['Vimeo']['oauth_token_secret'] = 'OAuth Token Secret';

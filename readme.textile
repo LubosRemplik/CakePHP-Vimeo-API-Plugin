@@ -1,0 +1,23 @@
+h1. CakePHP Vimeo API Plugin
+
+A CakePHP Plugin containing a DataSource for interarcting with Vimeo web services.
+http://vimeo.com/api/
+
+h2. Dependencies
+
+CakePHP ReST DataSource Plugin https://github.com/neilcrookes/CakePHP-ReST-DataSource-Plugin
+
+h2. Configuration
+
+Configure and use config/config.php.default or copy and set config/vimeo_config.php.default
+Clone CakePHP ReST DataSource Plugin under plugins/rest
+
+h2. Usage
+
+bc. 
+var $uses = array('Vimeo.VimeoVideo');
+...
+if (($mostplayed = Cache::read('VimeoVideo.mostPlayed')) === false) {
+	$mostplayed = $this->VimeoVideo->find('getAll', array('per_page'=>5, 'sort'=>'most_played'));
+	Cache::write('VimeoVideo.mostPlayed', $mostplayed);
+}
