@@ -15,45 +15,19 @@ var $vimeo = array(
 	'password' => '<vimeo api secret>',
 );
 ```
+### Setp 3: Use Vimeo controllers and models
 
-### Step 3: Install the Apis-OAuth Component for authentication
-
+For Oauth dance in your view
 ```
-MyController extends AppController {
-	var $components = array(
-		'Apis.Oauth' => 'vimeo',
-	);
-	
-	function connect() {
-		$this->Oauth->connect();
-	}
-	
-	function vimeo_callback() {
-		$this->Oauth->callback();
-	}
-}
+echo $this->Html->link('Connect with Vimeo', array(
+	'plugin' => 'vimeo', 'controller' => 'vimeo',
+	'action' => 'connect', bin2hex(serialize(your_cake_url))
+));
 ```
 
-### Step 4: Use the datasource normally 
-Check the [wiki](https://github.com/ProLoser/CakePHP-Vimeo/wiki) for available commands & usage
-
+To fetch data, in use one of Vimeo model in your controler
 ```
-Class MyModel extends AppModel {
-
-	function readProfile() {
-		$this->setDataSource('vimeo');
-		$data = $this->find('all', array(
-			'path' => 'people/~',
-			'fields' => array(
-				'first-name', 'last-name', 'summary', 'specialties', 'associations', 'honors', 'interests', 'twitter-accounts', 
-				'positions' => array('title', 'summary', 'start-date', 'end-date', 'is-current', 'company'), 
-				'educations', 
-				'certifications',
-				'skills' => array('id', 'skill', 'proficiency', 'years'), 
-				'recommendations-received',
-			),
-		));
-		$this->setDataSource('default');
-	}
-}
+$uses = array('Vimeo.VimeoVideos');
+...
+$videos = $this->VimeoVideos->getList();
 ```
