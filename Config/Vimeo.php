@@ -7,65 +7,36 @@
  *
  */
 $config['Apis']['Vimeo']['hosts'] = array(
-	'oauth' => 'api.vimeo.com/uas/oauth',
-	'rest' => 'api.vimeo.com/v1',
+	'oauth' => 'vimeo.com/oauth',
+	'rest' => 'vimeo.com/api/rest/v2',
 );
-// http://developer.vimeo.com/docs/DOC-1251
+// http://vimeo.com/api/docs/advanced-api
 $config['Apis']['Vimeo']['oauth'] = array(
 	'authorize' => 'authorize', // Example URI: api.vimeo.com/uas/oauth/authorize
-	'request' => 'requestToken',
-	'access' => 'accessToken',
+	'request' => 'request_token',
+	'access' => 'access_token',
 	'login' => 'authenticate', // Like authorize, just auto-redirects
-	'logout' => 'invalidateToken',
+	'logout' => 'invalidate_token',
 );
 $config['Apis']['Vimeo']['read'] = array(
 	// field
-	'people' => array(
-		// api url
-		'people/id=' => array(
+	'getAll' => array(
+		// api method
+		'vimeo.videos.getAll' => array(
 			// required conditions
-			'id',
-		),
-		'people/url=' => array(
-			'url',
-		),
-		'people/~' => array(),
-	),
-	'people-search' => array(
-		'people-search' => array(
-		// optional conditions the api call can take
+			// optional conditions the api call can take
 			'optional' => array(
-				'keywords',
-				'first-name',
-				'last-name',
-				'company-name',
-				'current-company',
-				'title',
-				'current-title',
-				'school-name',
-				'current-school',
-				'country-code',
-				'postal-code',
-				'distance',
-				'start',
-				'count',
-				'facet',
-				'facets',
+				'user_id',
+				'full_response',
+				'page',
+				'per_page',
 				'sort',
-			),
+			)
 		),
 	),
 );
 
 $config['Apis']['Vimeo']['write'] = array(
-	// http://developer.vimeo.com/docs/DOC-1044
-	'mailbox' => array(
-		'people/~/mailbox' => array(
-			'subject',
-			'body',
-			'recipients',
-		),
-	),
 );
 
 $config['Apis']['Vimeo']['update'] = array(
