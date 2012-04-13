@@ -19,15 +19,15 @@ var $vimeo = array(
 
 For Oauth dance in your view
 ```
-echo $this->Html->link('Connect with Vimeo', array(
-	'plugin' => 'vimeo', 'controller' => 'vimeo',
-	'action' => 'connect', bin2hex(serialize(your_cake_url))
+echo $this->Html->link('Connect with Vimeo', array(  
+	'plugin' => 'vimeo', 'controller' => 'vimeo',  
+	'action' => 'connect', bin2hex(serialize(your_cake_url))  
 ));
 ```
 
 To fetch data, in use one of Vimeo model in your controler
 ```
-$uses = array('Vimeo.VimeoVideos');
-...
+$uses = array('Vimeo.VimeoVideos');  
+...  
 $videos = $this->VimeoVideos->getList();
 ```
