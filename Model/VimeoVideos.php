@@ -9,7 +9,7 @@ class VimeoVideos extends VimeoAppModel {
 	 **/
 	public function getAll($conditions = null) {
 		$cacheKey = $this->_generateCacheKey('getAll', $conditions);
-		if ($data = Cache::read($cacheKey) === false) {
+		if (($data = Cache::read($cacheKey)) === false) {
 			$data = $this->find('all', array(
 				'fields' => 'getAll',
 				'conditions' => $conditions
@@ -41,7 +41,7 @@ class VimeoVideos extends VimeoAppModel {
 		$finished = false;
 		while (!$finished) {
 			$cacheKey = $this->_generateCacheKey('getList', $conditions);
-			if ($data = Cache::read($cacheKey) === false) {
+			if (($data = Cache::read($cacheKey)) === false) {
 				$data = $this->getAll($conditions);
 				Cache::write($cacheKey, $data);
 			}
