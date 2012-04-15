@@ -16,6 +16,7 @@ class VimeoController extends AppController {
 	}
 
 	public function vimeo_callback() {
+		Cache::clear();
 		$this->Oauth->callback();
 	}
 }
