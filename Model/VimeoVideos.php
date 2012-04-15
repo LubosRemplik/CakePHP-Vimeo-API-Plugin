@@ -57,12 +57,12 @@ class VimeoVideos extends VimeoAppModel {
 	}
 
 	protected function _generateCacheKey($fceName, $conditions = null) {
-		$cacheKey = '';
-		$cacheKey .= $this->alias;
-		$cacheKey .= $fceName;
+		$cacheKey = array();
+		$cacheKey[] = $this->alias;
+		$cacheKey[] = $fceName;
 		if ($conditions) {
-			$cacheKey .= md5(serialize($conditions));	
+			$cacheKey[] = md5(serialize($conditions));	
 		}
-		return $cacheKey;
+		return implode('_', $cacheKey);
 	}
 }
