@@ -3,23 +3,27 @@ App::uses('VimeoAppModel', 'Vimeo.Model');
 class VimeoVideos extends VimeoAppModel {
 
 	/**
-	 * Returns all videos
+	 * Returns all videos, cached
 	 *
 	 * http://vimeo.com/api/docs/methods/vimeo.videos.getAll
 	 **/
 	public function getAll($conditions = null) {
-		$data = $this->find('all', array(
-			'fields' => 'getAll',
-			'conditions' => $conditions
-		));
-		if ($data['stat'] == 'fail') {
-			return false;
+		$cacheKey = $this->_generateCacheKey('getAll', $conditions);
+		if ($data = Cache::read($cacheKey) === false) {
+			$data = $this->find('all', array(
+				'fields' => 'getAll',
+				'conditions' => $conditions
+			));
+			if ($data['stat'] == 'fail') {
+				return false;
+			}
+			Cache::write($cacheKey, $data);
 		}
 		return $data;
 	}
 
 	/**
-	 * Returns list of videos
+	 * Returns list of videos, cached
 	 * 
 	 * Uses getAll methot go get list of all videos with single array in 
 	 * format id => title
@@ -36,7 +40,11 @@ class VimeoVideos extends VimeoAppModel {
 		$results = array();
 		$finished = false;
 		while (!$finished) {
-			$data = $this->getAll($conditions);
+			$cacheKey = $this->_generateCacheKey('getList', $conditions);
+			if ($data = Cache::read($cacheKey) === false) {
+				$data = $this->getAll($conditions);
+				Cache::write($cacheKey, $data);
+			}
 			if(!$data) return false;
 			$results = am($results, Set::combine($data, 'videos.video.{n}.id', 'videos.video.{n}.title'));
 			$conditions['page'] += 1;
@@ -46,5 +54,15 @@ class VimeoVideos extends VimeoAppModel {
 			}
 		}
 		return $results;
+	}
+
+	protected function _generateCacheKey($fceName, $conditions = null) {
+		$cacheKey = '';
+		$cacheKey .= $this->alias;
+		$cacheKey .= $fceName;
+		if ($conditions) {
+			$cacheKey .= md5(serialize($conditions));	
+		}
+		return $cacheKey;
 	}
 }
