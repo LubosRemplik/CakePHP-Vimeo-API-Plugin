@@ -46,7 +46,7 @@ class VimeoVideos extends VimeoAppModel {
 				Cache::write($cacheKey, $data);
 			}
 			if(!$data) return false;
-			$results = am($results, Set::combine($data, 'videos.video.{n}.id', 'videos.video.{n}.title'));
+			$results = $results + Set::combine($data, 'videos.video.{n}.id', 'videos.video.{n}.title');
 			$conditions['page'] += 1;
 			if ((count($results) == $data['videos']['total'])
 			|| (isset($conditions['limit']) && $conditions['limit'] < 50)) {
