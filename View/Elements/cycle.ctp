@@ -8,7 +8,7 @@ echo $this->Html->script('http://a.vimeocdn.com/js/froogaloop.min.js');
 echo $this->Html->scriptBlock("
 	var VimeoEmbed = {};
 	var player = $('$selector');
-	 
+	
 	//Called on document ready
 	VimeoEmbed.init = function(e) {
 		//Listen to the load event for all the iframes on the page
@@ -26,7 +26,6 @@ echo $this->Html->scriptBlock("
 	 */
 	VimeoEmbed.vimeo_player_loaded = function(player_id) {
 		// events
-		//alert(player_id);
 		var iframe = $('#'+player_id).get(0);
 		iframe.addEvent('onPlay', function(e){
 			player.cycle('pause');

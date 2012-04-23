@@ -5,9 +5,12 @@ if (!isset($width)) {
 if (!isset($height)) {
 	$height = 480;
 }
+if (!isset($autoplay)) {
+	$autoplay = false;
+}
 $options = array(
 	'title'=>0, 'byline'=>0, 'portrait'=>0, 'js_api'=>'1', 
-	'js_swf_id'=>"vimeo-$id"
+	'js_swf_id'=>"vimeo-$id", 'autoplay' => $autoplay 
 );
 if (isset($color)) {
 	$options['color'] = $color;
