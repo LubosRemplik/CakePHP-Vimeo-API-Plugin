@@ -20,7 +20,7 @@ $config['Apis']['Vimeo']['oauth'] = array(
 );
 $config['Apis']['Vimeo']['read'] = array(
 	// field
-	'getAll' => array(
+	'videos.getAll' => array(
 		// api method
 		'vimeo.videos.getAll' => array(
 			// required conditions
@@ -31,6 +31,32 @@ $config['Apis']['Vimeo']['read'] = array(
 				'page',
 				'per_page',
 				'sort',
+			)
+		),
+	),
+	'albums.getAll' => array(
+		// api method
+		'vimeo.albums.getAll' => array(
+			// required conditions
+			// optional conditions the api call can take
+			'optional' => array(
+				'user_id',
+				'page',
+				'per_page',
+				'sort',
+			)
+		),
+	),
+	'albums.getVideos' => array(
+		'vimeo.albums.getVideos' => array(
+			// required conditions
+			'album_id',
+			// optional conditions the api call can take
+			'optional' => array(
+				'full_response',
+				'page',
+				'password',
+				'per_page',
 			)
 		),
 	),
