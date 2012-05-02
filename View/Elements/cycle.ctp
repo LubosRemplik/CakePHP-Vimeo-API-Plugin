@@ -33,8 +33,8 @@ echo $this->Html->scriptBlock("
 		iframe.addEvent('onFinish', function(e){
 			player.cycle('resume');
 		});
-		iframe.addEvent('onPause', function(e){
-			player.cycle('resume');
-		});
+		//iframe.addEvent('onPause', function(e){
+			//player.cycle('resume');
+		//});
 	};
 ");
