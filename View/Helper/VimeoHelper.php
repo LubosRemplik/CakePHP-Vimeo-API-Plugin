@@ -28,6 +28,7 @@ class VimeoHelper extends AppHelper {
 		$options = array(
 			'type' => 'select',
 			'options' => isset($videos) ? $videos : null,
+			'empty' => 'Select',
 			'between' => 
 				$this->Html->div('note', "please ".$this->Html->link('connect', $connectUrl)
 				." CMS with your Vimeo account to see list with your videos"),
