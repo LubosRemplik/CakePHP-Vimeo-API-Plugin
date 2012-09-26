@@ -82,6 +82,9 @@ class VimeoAlbums extends VimeoAppModel {
 	 **/
 	public function getVideosByTitle($title, $conditions = array()) {
 		$list = $this->getList();
+		if (!$list) {
+			return false;
+		}
 		$albumID = false;
 		foreach ($list as $key => $value) {
 			if ($title == $value) {
