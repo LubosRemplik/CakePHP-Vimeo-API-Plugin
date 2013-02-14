@@ -5,6 +5,7 @@ http://vimeo.com/api/
 
 h2. Dependencies
 
+CakePHP HttpSocket from neilcrookes https://github.com/neilcrookes/http_socket_oauth (Vendor)
 CakePHP ReST DataSource Plugin https://github.com/neilcrookes/CakePHP-ReST-DataSource-Plugin
 
 h2. Configuration
