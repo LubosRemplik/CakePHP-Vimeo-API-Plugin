@@ -1,33 +1,40 @@
-# Installation
+CakePHP Vimeo API Plugin
+=========================
 
-### Step 1: Download / clone the following plugins: 
+Requirements
+------------
+[CakePHP v2.x](https://github.com/cakephp/cakephp)   
+[Opauth](https://github.com/LubosRemplik/cakephp-opauth)   
+[OauthLib](https://github.com/LubosRemplik/oauth_lib)
 
- * **Vimeo** to _Plugin/Vimeo_
- * [HttpSocketOauth plugin](https://github.com/ProLoser/http_socket_oauth) (ProLoser fork) to _Plugin/HttpSocketOauth_
- * [Apis plugin](https://github.com/ProLoser/CakePHP-Api-Datasources) to _Plugin/Apis_
+How to use it
+-------------
+1.	Install this plugin for your CakePHP app.   
+	Assuming `APP` is the directory where your CakePHP app resides, it's usually `app/` from the base of CakePHP.
 
-### Step 2: Setup your `database.php`
+	```bash
+	cd APP/Plugin
+	git clone git://github.com/LubosRemplik/CakePHP-Vimeo-API-Plugin.git Vimeo
+	```
 
-```
-var $vimeo = array(
-	'datasource' => 'Vimeo.Vimeo',
-	'login' => '<vimeo api key>',
-	'password' => '<vimeo api secret>',
-);
-```
-### Setp 3: Use Vimeo controllers and models
+2.  Install required plugins with all dependcies and configuration
 
-For Oauth dance in your view
-```
-echo $this->Html->link('Connect with Vimeo', array(  
-	'plugin' => 'vimeo', 'controller' => 'vimeo',  
-	'action' => 'connect', bin2hex(serialize(your_cake_url))  
-));
-```
+3.  Connect vimeo's account with your application http://example.org/auth/vimeo
 
-To fetch data, in use one of Vimeo model in your controler
-```
-$uses = array('Vimeo.VimeoVideos');  
-...  
-$videos = $this->VimeoVideos->getList();
-```
+4.  Include needed model in your controller or anywhere you want to
+
+		:::php
+		<?php   
+		$uses = array('Vimeo.VimeoStatuses');   
+		...   
+		$data = $this->VimeoStatuses->homeTimeline();   
+		debug ($data);   
+
+		:::php
+		<?php   
+		$data = ClassRegistry::init('Vimeo.VimeoStatuses')->homeTimeline();   
+		debug ($data);   
+
+Sample
+------
+Not available, but similar plugin and sample has [CakePHP Google API Plugin](https://github.com/LubosRemplik/CakePHP-Google-API-Plugin).
