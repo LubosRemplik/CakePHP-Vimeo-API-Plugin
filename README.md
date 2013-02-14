@@ -25,13 +25,13 @@ How to use it
 
 		:::php
 		<?php   
+		// in controller
 		$uses = array('Vimeo.VimeoStatuses');   
 		...   
 		$data = $this->VimeoStatuses->homeTimeline();   
 		debug ($data);   
 
-		:::php
-		<?php   
+		// anywhere
 		$data = ClassRegistry::init('Vimeo.VimeoStatuses')->homeTimeline();   
 		debug ($data);   
 
