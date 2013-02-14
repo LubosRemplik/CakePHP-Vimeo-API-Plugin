@@ -1,55 +1,40 @@
 <?php
-App::uses('VimeoAppModel', 'Vimeo.Model');
-class VimeoVideos extends VimeoAppModel {
+App::uses('VimeoApi', 'Vimeo.Model');
+class VimeoVideos extends VimeoApi {
 
-	/**
-	 * Returns all videos, cached
-	 *
-	 * http://vimeo.com/api/docs/methods/vimeo.videos.getAll
-	 **/
-	public function getAll($conditions = null) {
-		$cacheKey = $this->_generateCacheKey('getAll', $conditions);
-		if (($data = Cache::read($cacheKey)) === false) {
-			$data = $this->find('all', array(
-				'fields' => 'videos.getAll',
-				'conditions' => $conditions
-			));
-			if ($data['stat'] == 'fail') {
-				return false;
-			}
-			Cache::write($cacheKey, $data);
+	public function __call($method, $params) {
+		$params2 = array();
+		if (!empty($params[0])) {
+			$params2 = $params[0];
 		}
-		return $data;
+		$request = array();
+		if (!empty($params[1])) {
+			$request = $params[1];
+		}
+		return $this->_request(sprintf('vimeo.videos.%s', $method), $params2, $request);
 	}
 
 	/**
 	 * Returns list of videos, cached
 	 * 
-	 * Uses getAll methot go get list of all videos with single array in 
-	 * format id => title
-	 * 
 	 * Available options are user_id, limit, sort
 	 **/
-	public function getList($conditions = array()) {
+	public function getList($params = array()) {
 		$allowed = array_flip(array('user_id', 'limit', 'sort'));
-		$conditions = array_intersect_key($conditions, $allowed);
-		$conditions['page'] = 1;
-		if (isset($conditions['limit']) && $conditions['limit'] < 50) {
-			$conditions['per_page'] = $conditions['limit'];
+		$params = array_intersect_key($params, $allowed);
+		$params['page'] = 1;
+		if (isset($params['limit']) && $params['limit'] < 50) {
+			$params['per_page'] = $params['limit'];
 		}
 		$results = array();
 		$finished = false;
 		while (!$finished) {
-			$cacheKey = $this->_generateCacheKey('getList', $conditions);
-			if (($data = Cache::read($cacheKey)) === false) {
-				$data = $this->getAll($conditions);
-				Cache::write($cacheKey, $data);
-			}
+			$data = $this->getAll($params);
 			if(!$data) return false;
 			$results = $results + Set::combine($data, 'videos.video.{n}.id', 'videos.video.{n}.title');
-			$conditions['page'] += 1;
+			$params['page'] += 1;
 			if ((count($results) == $data['videos']['total'])
-			|| (isset($conditions['limit']) && $conditions['limit'] < 50)) {
+			|| (isset($params['limit']) && $params['limit'] < 50)) {
 				$finished = true;
 			}
 		}

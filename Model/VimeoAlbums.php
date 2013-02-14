@@ -1,55 +1,44 @@
 <?php
-App::uses('VimeoAppModel', 'Vimeo.Model');
-class VimeoAlbums extends VimeoAppModel {
+// test
+App::uses('VimeoApi', 'Vimeo.Model');
+class VimeoAlbums extends VimeoApi {
 
-	/**
-	 * Returns all albums, cached
-	 *
-	 * http://vimeo.com/api/docs/methods/vimeo.albums.getAll
-	 **/
-	public function getAll($conditions = null) {
-		$cacheKey = $this->_generateCacheKey('getAll', $conditions);
-		if (($data = Cache::read($cacheKey)) === false) {
-			$data = $this->find('all', array(
-				'fields' => 'albums.getAll',
-				'conditions' => $conditions
-			));
-			if ($data['stat'] == 'fail') {
-				return false;
-			}
-			Cache::write($cacheKey, $data);
+	public function __call($method, $params) {
+		$params2 = array();
+		if (!empty($params[0])) {
+			$params2 = $params[0];
 		}
-		return $data;
+		$request = array();
+		if (!empty($params[1])) {
+			$request = $params[1];
+		}
+		return $this->_request(sprintf('vimeo.albums.%s', $method), $params2, $request);
 	}
 
 	/**
-	 * Returns list of albums, cached
+	 * Returns list of albums
 	 * 
-	 * Uses getAll methot go get list of all albums with single array in 
-	 * format id => title
-	 * 
-	 * Available options are user_id, limit, sort
+	 * Available params are user_id, limit, sort
 	 **/
-	public function getList($conditions = array()) {
+	public function getList($params = array(), $request = array()) {
 		$allowed = array_flip(array('user_id', 'limit', 'sort'));
-		$conditions = array_intersect_key($conditions, $allowed);
-		$conditions['page'] = 1;
-		if (isset($conditions['limit']) && $conditions['limit'] < 50) {
-			$conditions['per_page'] = $conditions['limit'];
+		$params = array_intersect_key($params, $allowed);
+		$params['page'] = 1;
+		if (isset($params['limit']) && $params['limit'] < 50) {
+			$params['per_page'] = $params['limit'];
 		}
 		$results = array();
 		$finished = false;
 		while (!$finished) {
-			$cacheKey = $this->_generateCacheKey('getList', $conditions);
-			if (($data = Cache::read($cacheKey)) === false) {
-				$data = $this->getAll($conditions);
-				Cache::write($cacheKey, $data);
-			}
+			$data = $this->getAll($params);
 			if(!$data) return false;
-			$results = $results + Set::combine($data, 'albums.album.{n}.id', 'albums.album.{n}.title');
-			$conditions['page'] += 1;
+			$results = $results + Set::combine(
+				$data, 'albums.album.{n}.id', 
+				'albums.album.{n}.title'
+			);
+			$params['page'] += 1;
 			if ((count($results) == $data['albums']['total'])
-			|| (isset($conditions['limit']) && $conditions['limit'] < 50)) {
+			|| (isset($params['limit']) && $params['limit'] < 50)) {
 				$finished = true;
 			}
 		}
@@ -57,30 +46,9 @@ class VimeoAlbums extends VimeoAppModel {
 	}
 
 	/**
-	 * Returns all videos from album, cached
-	 *
-	 * http://vimeo.com/api/docs/methods/vimeo.albums.getVideos
-	 **/
-	public function getVideos($conditions) {
-	//debug($conditions);die;
-		$cacheKey = $this->_generateCacheKey('getVideos', $conditions);
-		if (($data = Cache::read($cacheKey)) === false) {
-			$data = $this->find('all', array(
-				'fields' => 'albums.getVideos',
-				'conditions' => $conditions
-			));
-			if ($data['stat'] == 'fail') {
-				return false;
-			}
-			Cache::write($cacheKey, $data);
-		}
-		return $data;
-	}
-
-	/**
 	 * Returns all videos by album title
 	 **/
-	public function getVideosByTitle($title, $conditions = array()) {
+	public function getVideosByTitle($title, $params = array()) {
 		$list = $this->getList();
 		if (!$list) {
 			return false;
@@ -94,35 +62,29 @@ class VimeoAlbums extends VimeoAppModel {
 		if (!$albumID) {
 			return false;
 		}
-		$conditions['album_id'] = $albumID;
-		return $this->getVideos($conditions);
+		$params['album_id'] = $albumID;
+		return $this->getVideos($params);
 	}
 
 	/**
-	 * Returns list of videos by album title, cached
+	 * Returns list of videos by album title
 	 **/
-	public function getVideosListByTitle($title, $conditions = array()) {
+	public function getVideosListByTitle($title, $params = array()) {
 		$allowed = array_flip(array('limit', 'sort'));
-		$conditions = array_intersect_key($conditions, $allowed);
-		$conditions['page'] = 1;
-		if (isset($conditions['limit']) && $conditions['limit'] < 50) {
-			$conditions['per_page'] = $conditions['limit'];
+		$params = array_intersect_key($params, $allowed);
+		$params['page'] = 1;
+		if (isset($params['limit']) && $params['limit'] < 50) {
+			$params['per_page'] = $params['limit'];
 		}
 		$results = array();
 		$finished = false;
 		while (!$finished) {
-			$cacheKey = $this->_generateCacheKey(
-				'getVideosListByTitle', $conditions
-			);
-			if (($data = Cache::read($cacheKey)) === false) {
-				$data = $this->getVideosByTitle($title, $conditions);
-				Cache::write($cacheKey, $data);
-			}
+			$data = $this->getVideosByTitle($title, $params);
 			if(!$data) return false;
 			$results = $results + Set::combine($data, 'videos.video.{n}.id', 'videos.video.{n}.title');
-			$conditions['page'] += 1;
+			$params['page'] += 1;
 			if ((count($results) == $data['videos']['total'])
-			|| (isset($conditions['limit']) && $conditions['limit'] < 50)) {
+			|| (isset($params['limit']) && $params['limit'] < 50)) {
 				$finished = true;
 			}
 		}
