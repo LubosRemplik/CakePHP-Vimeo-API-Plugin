@@ -65,7 +65,7 @@ class VimeoVideo extends VimeoAppModel {
 				$finished = true;
 			}
 		}
-		sort($results);
+		asort($results);
 		return $results;
 	}
 
@@ -92,7 +92,7 @@ class VimeoVideo extends VimeoAppModel {
 				$finished = true;
 			}
 		}
-		sort($results);
+		asort($results);
 		return $results;
 	}
 }
