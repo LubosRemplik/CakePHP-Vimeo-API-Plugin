@@ -17,6 +17,7 @@ class VimeoVideo extends VimeoAppModel {
 	 */
 	public $_findMethods = array(
 		'getAll' => true,
+		'getLikes' => true,
 	);
 	
 	/**
@@ -26,6 +27,7 @@ class VimeoVideo extends VimeoAppModel {
 	 */
 	public $allowedFindOptions = array(
 		'getAll'  => array('full_response', 'page', 'per_page', 'sort', 'user_id'),
+		'getLikes'  => array('full_response', 'page', 'per_page', 'sort', 'user_id'),
   	);
   	
 	public function find($type, $options = array()) {
@@ -38,5 +40,59 @@ class VimeoVideo extends VimeoAppModel {
 		}
 		$this->request['auth'] = true;
 		return parent::find('all', $options);
+	}
+
+	public function getList($params = array()) {
+		$allowed = array_flip(array('user_id', 'limit', 'sort'));
+		$params = array_intersect_key($params, $allowed);
+		$params['page'] = 1;
+		if (isset($params['limit']) && $params['limit'] < 50) {
+			$params['per_page'] = $params['limit'];
+		}
+		$results = array();
+		$finished = false;
+		while (!$finished) {
+			$data = $this->find('getAll', $params);
+			if(!$data) return false;
+			$results = $results + Set::combine(
+				$data, 
+				'videos.video.{n}.id', 
+				'videos.video.{n}.title'
+			);
+			$params['page'] += 1;
+			if ((count($results) == $data['videos']['total'])
+			|| (isset($params['limit']) && $params['limit'] < 50)) {
+				$finished = true;
+			}
+		}
+		sort($results);
+		return $results;
+	}
+
+	public function getListLiked($params = array()) {
+		$allowed = array_flip(array('user_id', 'limit', 'sort'));
+		$params = array_intersect_key($params, $allowed);
+		$params['page'] = 1;
+		if (isset($params['limit']) && $params['limit'] < 50) {
+			$params['per_page'] = $params['limit'];
+		}
+		$results = array();
+		$finished = false;
+		while (!$finished) {
+			$data = $this->find('getLikes', $params);
+			if(!$data) return false;
+			$results = $results + Set::combine(
+				$data, 
+				'videos.video.{n}.id', 
+				'videos.video.{n}.title'
+			);
+			$params['page'] += 1;
+			if ((count($results) == $data['videos']['total'])
+			|| (isset($params['limit']) && $params['limit'] < 50)) {
+				$finished = true;
+			}
+		}
+		sort($results);
+		return $results;
 	}
 }
